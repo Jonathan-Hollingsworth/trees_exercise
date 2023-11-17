@@ -22,7 +22,6 @@ class Tree {
       let current = toVisitStack.pop();
 
       if (current !== null) {
-        console.log(current.val)
         sum += current.val;
       }
 
