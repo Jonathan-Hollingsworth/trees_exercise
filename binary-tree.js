@@ -36,15 +36,16 @@ class BinaryTree {
 
   maxDepth() {
     let toVisitQueue = [this.root];
+    let depth = 0
 
     while (toVisitQueue.length) {
       let current = toVisitQueue.shift();
 
-      if (current.val === val) 
-        return current;
+      if (current === null || (current.left === null && current.right === null)) 
+        return depth;
 
-      toVisitQueue.push(current.left)
-      toVisitQueue.push(current.right)
+      if(current.left !== null)toVisitQueue.push(current.left)
+      if(current.right !== null)toVisitQueue.push(current.right)
     }
   }
 
@@ -53,15 +54,23 @@ class BinaryTree {
 
   maxSum() {
     let toVisitQueue = [this.root];
+    let sum = 0
 
     while (toVisitQueue.length) {
       let current = toVisitQueue.shift();
 
-      if (current.val === val) 
-        return current;
+      if (current === null || (current.left === null && current.right === null)) {
+        return sum;
+      }
+      
+      sum += current.val
 
-      toVisitQueue.push(current.left)
-      toVisitQueue.push(current.right)
+      if (current.right !== null && current.right !== null) {
+        if(current.left.val > current.right.val)toVisitQueue.push(current.left)
+        if(current.right.val < current.right.val)toVisitQueue.push(current.right)
+      }
+      if(current.left !== null)toVisitQueue.push(current.left)
+      if(current.right !== null)toVisitQueue.push(current.right)
     }
   }
 
