@@ -17,17 +17,24 @@ class BinaryTree {
    * the length of the shortest path from the root to a leaf. */
 
   minDepth() {
-    let toVisitQueue = [this.root];
+    let nextDepth = [this.root];
     let depth = 0
 
-    while (toVisitQueue.length) {
-      let current = toVisitQueue.shift();
+    while (nextDepth.length) {
+      if (nextDepth[0] === null) return depth
+      let currentDepth = [...nextDepth]
+      nextDepth = []
+      depth += 1
 
-      if (current === null || (current.left === null && current.right === null)) 
-        return depth;
+      while (currentDepth.length) {
+        let current = currentDepth.shift();
 
-      if(current.left !== null)toVisitQueue.push(current.left)
-      if(current.right !== null)toVisitQueue.push(current.right)
+        if (current.left === null && current.right === null) 
+          return depth;
+
+        if(current.left !== null)nextDepth.push(current.left)
+        if(current.right !== null)nextDepth.push(current.right)
+      }
     }
   }
 
@@ -35,43 +42,68 @@ class BinaryTree {
    * the length of the longest path from the root to a leaf. */
 
   maxDepth() {
-    let toVisitQueue = [this.root];
+    let nextDepth = [this.root];
     let depth = 0
 
-    while (toVisitQueue.length) {
-      let current = toVisitQueue.shift();
+    while (nextDepth.length) {
+      if (nextDepth[0] === null) return depth
+      let currentDepth = [...nextDepth]
+      nextDepth = []
+      depth += 1
 
-      if (current === null || (current.left === null && current.right === null)) 
-        return depth;
+      while (currentDepth.length) {
+        let current = currentDepth.shift();
 
-      if(current.left !== null)toVisitQueue.push(current.left)
-      if(current.right !== null)toVisitQueue.push(current.right)
+        if(current.left !== null)nextDepth.push(current.left)
+        if(current.right !== null)nextDepth.push(current.right)
+      }
     }
+
+    return depth;
   }
 
   /** maxSum(): return the maximum sum you can obtain by traveling along a path in the tree.
    * The path doesn't need to start at the root, but you can't visit a node more than once. */
 
   maxSum() {
-    let toVisitQueue = [this.root];
-    let sum = 0
+    let root = this.root
+    function checkSum(node) {
+      if (!node) return 0
 
-    while (toVisitQueue.length) {
-      let current = toVisitQueue.shift();
-
-      if (current === null || (current.left === null && current.right === null)) {
-        return sum;
+      if (node === root) {
+        if (node.left && node.right) {
+          if (checkSum(node.left) > checkSum(node.right)) {
+            if (checkSum(node.right) > 0) {
+              return node.val + checkSum(node.left) + checkSum(node.right)
+            }
+            return node.val + checkSum(node.left)
+          } else {
+            if (checkSum(node.left) > 0) {
+              return node.val + checkSum(node.right) + checkSum(node.left)
+            }
+            return node.val + checkSum(node.right)
+          }
+        }
+      } else {
+        if (node.left && node.right) {
+          if (checkSum(node.left) > checkSum(node.right)) {
+            return node.val + checkSum(node.left)
+          } else {
+            return node.val + checkSum(node.right)
+          }
+        } else if (node.left) {
+          if (checkSum(node.left) > 0) {
+            return node.val + checkSum(node.left)
+          } else { return node.val }
+        } else if (node.right) {
+          if (checkSum(node.right) > 0) {
+            return node.val + checkSum(node.right)
+          } else { return node.val }
+        } else { return node.val }
       }
-      
-      sum += current.val
-
-      if (current.right !== null && current.right !== null) {
-        if(current.left.val > current.right.val)toVisitQueue.push(current.left)
-        if(current.right.val < current.right.val)toVisitQueue.push(current.right)
-      }
-      if(current.left !== null)toVisitQueue.push(current.left)
-      if(current.right !== null)toVisitQueue.push(current.right)
     }
+
+    return checkSum(root)
   }
 
   /** nextLarger(lowerBound): return the smallest value in the tree
@@ -86,9 +118,13 @@ class BinaryTree {
 
       if (current === null) return null
 
-      if (current.val > lowerBound) 
-        if (nextLarger === null || current.val < nextLarger)
+      if (current.val > lowerBound) {
+        if (nextLarger === null || current.val < nextLarger) {
           nextLarger = current.val;
+        }
+      }
+
+      if (nextLarger === lowerBound + 1) return nextLarger
 
       if(current.left !== null)toVisitQueue.push(current.left)
       if(current.right !== null)toVisitQueue.push(current.right)
